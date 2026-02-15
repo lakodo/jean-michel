@@ -18,6 +18,46 @@ Define protected scopes and explicit features, delegate background work to auton
 
 ---
 
+## Installation
+
+Jean-Michel is intended to be installed and used from another repository.
+
+### Option 1: Install from PyPI
+
+From your target project root:
+
+```bash
+uv add jean-michel
+```
+
+Then use the CLI:
+
+```bash
+uv run jm --help
+```
+
+### Option 2: Install from a Local Path (development phase)
+
+If you are iterating locally on Jean-Michel and want to consume it from another repo:
+
+```bash
+uv add --editable /absolute/path/to/jean-michel
+```
+
+Example:
+
+```bash
+uv add --editable /Users/jogue/workspace/lako/jean-michel
+```
+
+Then:
+
+```bash
+uv run jm --help
+```
+
+---
+
 ## What “Asynchronous” Means
 
 Interaction and execution are decoupled.

@@ -1,11 +1,20 @@
 [project]
 name = "jean-michel"
 version = "0.0.1"
-description = "An opA rigorous, constraint-first AI coding assistant built for asynchronous workflows."
+description = "A rigorous, constraint-first AI coding assistant built for asynchronous workflows."
 authors = [{ name = "Joris GUERRY", email = "j@9h.gg" }]
 readme = "README.md"
 keywords = ['python']
 requires-python = ">=3.10,<4.0"
+dependencies = [
+    "duckdb>=1.4.1",
+    "fastapi>=0.116.1",
+    "jinja2>=3.1.6",
+    "mcp>=1.26.0",
+    "python-multipart>=0.0.20",
+    "typer>=0.17.4",
+    "uvicorn>=0.35.0",
+]
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
@@ -19,9 +28,12 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://9hgg.github.io/jean-michel/"
-Repository = "https://github.com/9hgg/jean-michel"
-Documentation = "https://9hgg.github.io/jean-michel/"
+Homepage = "https://lakodo.github.io/jean-michel/"
+Repository = "https://github.com/lakodo/jean-michel"
+Documentation = "https://lakodo.github.io/jean-michel/"
+
+[project.scripts]
+jm = "jean_michel.cli:app"
 
 [dependency-groups]
 dev = [
@@ -108,4 +120,3 @@ skip_empty = true
 [tool.coverage.run]
 branch = true
 source = ["jean_michel"]
-
