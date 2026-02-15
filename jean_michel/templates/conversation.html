@@ -14,11 +14,7 @@
         --brand-dark: #0a4fb9;
         --radius: 16px;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         color: var(--ink);
@@ -29,7 +25,6 @@
           linear-gradient(160deg, #e7edf6 0%, #e4eaf7 45%, #edf0f7 100%);
         min-height: 100vh;
       }
-
       .grid {
         position: fixed;
         inset: 0;
@@ -39,15 +34,7 @@
           linear-gradient(to bottom, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
         background-size: 44px 44px;
       }
-
-      .shell {
-        position: relative;
-        z-index: 1;
-        max-width: 1060px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-
+      .shell { position: relative; z-index: 1; max-width: 1180px; margin: 2rem auto; padding: 0 1rem; }
       .chrome {
         background: var(--panel);
         border: 1px solid var(--line);
@@ -55,7 +42,6 @@
         box-shadow: 0 18px 38px rgba(14, 25, 48, 0.13);
         overflow: hidden;
       }
-
       .topbar {
         padding: 1rem 1.2rem;
         border-bottom: 1px solid var(--line);
@@ -64,17 +50,8 @@
         justify-content: space-between;
         gap: 1rem;
       }
-
-      .title {
-        margin: 0;
-        font-size: clamp(1.35rem, 3vw, 2rem);
-      }
-
-      .subtitle {
-        margin: 0.25rem 0 0;
-        color: var(--muted);
-      }
-
+      .title { margin: 0; font-size: clamp(1.35rem, 3vw, 2rem); }
+      .subtitle { margin: 0.25rem 0 0; color: var(--muted); }
       .repo-chip {
         border: 1px solid var(--line);
         border-radius: 999px;
@@ -84,21 +61,38 @@
         letter-spacing: 0.02em;
         background: rgba(255, 255, 255, 0.75);
       }
-
+      .tabs {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.9rem 1.2rem 0;
+      }
+      .tab {
+        display: inline-block;
+        text-decoration: none;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 0.45rem 0.75rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.66);
+      }
+      .tab.active {
+        color: #fff;
+        border-color: transparent;
+        background: linear-gradient(180deg, var(--brand), var(--brand-dark));
+      }
       .meta-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 0.65rem;
         padding: 1rem 1.2rem 0;
       }
-
       .meta {
         border: 1px solid var(--line);
         border-radius: 12px;
         padding: 0.7rem 0.8rem;
         background: rgba(255, 255, 255, 0.72);
       }
-
       .meta .label {
         font-size: 0.76rem;
         text-transform: uppercase;
@@ -106,22 +100,12 @@
         color: var(--muted);
         margin-bottom: 0.25rem;
       }
-
       .meta .value {
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.85rem;
       }
-
-      form {
-        display: grid;
-        gap: 0.7rem;
-        padding: 1rem 1.2rem 1.1rem;
-      }
-
-      label {
-        font-weight: 600;
-      }
-
+      form { display: grid; gap: 0.7rem; padding: 1rem 1.2rem 1.1rem; }
+      label { font-weight: 600; }
       textarea {
         width: 100%;
         min-height: 118px;
@@ -132,12 +116,10 @@
         font: inherit;
         background: #fff;
       }
-
       textarea:focus {
         outline: 2px solid rgba(15, 109, 255, 0.23);
         border-color: var(--brand);
       }
-
       button {
         width: fit-content;
         border: 0;
@@ -149,7 +131,6 @@
         letter-spacing: 0.01em;
         cursor: pointer;
       }
-
       .messages {
         list-style: none;
         margin: 0;
@@ -157,14 +138,12 @@
         display: grid;
         gap: 0.7rem;
       }
-
       .message {
         border: 1px solid var(--line);
         border-radius: 12px;
         padding: 0.72rem 0.82rem;
         background: rgba(255, 255, 255, 0.8);
       }
-
       .message-head {
         display: flex;
         justify-content: space-between;
@@ -172,24 +151,43 @@
         font-size: 0.84rem;
         color: var(--muted);
       }
-
-      .message-content {
-        margin-top: 0.45rem;
-        white-space: pre-wrap;
+      .message-content { margin-top: 0.45rem; white-space: pre-wrap; }
+      .empty { color: var(--muted); }
+      .repo-section { padding: 1rem 1.2rem 1.2rem; }
+      .repo-layout { display: grid; gap: 1rem; }
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.8);
+        overflow: hidden;
       }
-
-      .empty {
-        color: var(--muted);
+      .panel-head {
+        margin: 0;
+        padding: 0.7rem 0.8rem;
+        border-bottom: 1px solid var(--line);
+        font-size: 1rem;
       }
-
+      .table-wrap { overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+      th, td {
+        text-align: left;
+        border-bottom: 1px solid rgba(9, 22, 43, 0.08);
+        padding: 0.5rem 0.65rem;
+        white-space: nowrap;
+      }
+      th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .error {
+        border: 1px solid rgba(190, 24, 93, 0.22);
+        background: rgba(251, 207, 232, 0.4);
+        color: #831843;
+        border-radius: 12px;
+        padding: 0.7rem 0.8rem;
+        font-weight: 600;
+      }
       @media (max-width: 760px) {
-        .shell {
-          margin: 1rem auto;
-        }
-        .topbar {
-          flex-direction: column;
-          align-items: flex-start;
-        }
+        .shell { margin: 1rem auto; }
+        .topbar { flex-direction: column; align-items: flex-start; }
       }
     </style>
   </head>
@@ -199,11 +197,16 @@
       <section class="chrome">
         <header class="topbar">
           <div>
-            <h1 class="title">Jean-Michel Conversation</h1>
-            <p class="subtitle">Single timeline for repository collaboration.</p>
+            <h1 class="title">Jean-Michel</h1>
+            <p class="subtitle">Repository-aware collaboration surface.</p>
           </div>
           <div class="repo-chip">{{ repo_name }}</div>
         </header>
+
+        <nav class="tabs">
+          <a class="tab {% if active_tab == 'conversation' %}active{% endif %}" href="/?tab=conversation">Conversation</a>
+          <a class="tab {% if active_tab == 'repository' %}active{% endif %}" href="/?tab=repository">Repository</a>
+        </nav>
 
         <section class="meta-grid">
           <div class="meta">
@@ -228,6 +231,7 @@
           </div>
         </section>
 
+        {% if active_tab == "conversation" %}
         <form action="/messages" method="post">
           <label for="content">New message</label>
           <textarea id="content" name="content" required></textarea>
@@ -247,6 +251,100 @@
           <li class="message empty">No messages yet.</li>
           {% endfor %}
         </ul>
+        {% endif %}
+
+        {% if active_tab == "repository" %}
+        <section class="repo-section">
+          {% if repo_error %}
+          <div class="error">{{ repo_error }}</div>
+          {% elif repo_snapshot %}
+          <div class="repo-layout">
+            <article class="panel">
+              <h2 class="panel-head">Local Branches ({{ repo_snapshot.local_branches|length }})</h2>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
+                  <tbody>
+                    {% for branch in repo_snapshot.local_branches %}
+                    <tr>
+                      <td class="mono">{{ branch.name }}</td>
+                      <td class="mono">{{ branch.commit }}</td>
+                      <td>{{ branch.date }}</td>
+                      <td>{{ branch.subject }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="empty">No local branches.</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h2 class="panel-head">Remote Branches ({{ repo_snapshot.remote_branches|length }})</h2>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
+                  <tbody>
+                    {% for branch in repo_snapshot.remote_branches %}
+                    <tr>
+                      <td class="mono">{{ branch.name }}</td>
+                      <td class="mono">{{ branch.commit }}</td>
+                      <td>{{ branch.date }}</td>
+                      <td>{{ branch.subject }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="empty">No remote branches.</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h2 class="panel-head">Tags ({{ repo_snapshot.tags|length }})</h2>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Name</th><th>Commit</th><th>Date</th></tr></thead>
+                  <tbody>
+                    {% for tag in repo_snapshot.tags %}
+                    <tr>
+                      <td class="mono">{{ tag.name }}</td>
+                      <td class="mono">{{ tag.commit }}</td>
+                      <td>{{ tag.date }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="empty">No tags.</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h2 class="panel-head">Worktrees ({{ repo_snapshot.worktrees|length }})</h2>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Path</th><th>Head</th><th>Branch</th><th>Detached</th></tr></thead>
+                  <tbody>
+                    {% for wt in repo_snapshot.worktrees %}
+                    <tr>
+                      <td class="mono">{{ wt.path }}</td>
+                      <td class="mono">{{ wt.head }}</td>
+                      <td class="mono">{{ wt.branch or '-' }}</td>
+                      <td>{{ 'yes' if wt.detached else 'no' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="empty">No worktrees.</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+          {% endif %}
+        </section>
+        {% endif %}
       </section>
     </main>
   </body>
