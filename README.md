@@ -44,16 +44,26 @@ If you are iterating locally on Jean-Michel and want to consume it from another 
 uv add --editable /absolute/path/to/jean-michel
 ```
 
-Example:
-
-```bash
-uv add --editable /Users/jogue/workspace/lako/jean-michel
-```
-
 Then:
 
 ```bash
 uv run jm --help
+```
+
+### Conversation DB Path
+
+Jean-Michel stores conversation data in DuckDB.
+
+You can force a specific database path with:
+
+```bash
+JEAN_MICHEL_DB_PATH=/path/to/your/project/.jean-michel/conversation.duckdb uv run jm lm
+```
+
+If this variable is not set, the default path is:
+
+```text
+.jean-michel/conversation.duckdb
 ```
 
 ---
