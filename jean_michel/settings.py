@@ -66,7 +66,19 @@ def get_db_path() -> Path:
     if env_path:
         path = Path(env_path).expanduser().resolve()
     else:
-        path = find_repo_root() / ".jean-michel" / "conversation.duckdb"
+        repo_root = find_repo_root()
+        storage_dir = repo_root / ".jean-michel"
+        new_path = storage_dir / "storage.duckdb"
+        legacy_path = storage_dir / "conversation.duckdb"
+        if not new_path.exists() and legacy_path.exists():
+            legacy_path.rename(new_path)
+        path = new_path
 
     path.parent.mkdir(parents=True, exist_ok=True)
     return path
+
+
+def get_coverage_command() -> str:
+    """Return command used to compute coverage in target repositories."""
+
+    return os.getenv("JEAN_MICHEL_COVERAGE_CMD", "uv run pytest --cov --cov-report=xml")

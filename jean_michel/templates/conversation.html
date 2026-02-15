@@ -199,6 +199,20 @@
         padding: 0.7rem 0.8rem;
         font-weight: 600;
       }
+      .inline-form { display: inline; }
+      .compute-btn {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--ink);
+        font-weight: 600;
+        padding: 0.3rem 0.5rem;
+        cursor: pointer;
+      }
+      .cov {
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+      }
       .compare-form {
         display: grid;
         grid-template-columns: 1fr 1fr auto;
@@ -294,6 +308,20 @@
 
         {% if active_tab == "repository" %}
         <section class="repo-section">
+          {% if coverage_command_error %}
+          <div class="error">{{ coverage_command_error }}</div>
+          {% endif %}
+          {% if coverage_error %}
+          <div class="error">{{ coverage_error }}</div>
+          {% endif %}
+          <article class="panel" style="margin-bottom: 1rem;">
+            <h2 class="panel-head">Coverage Command</h2>
+            <form action="/coverage/command" method="post" style="padding: 0.8rem;">
+              <label for="coverage-command">Command executed in isolated worktree</label>
+              <input id="coverage-command" name="command" type="text" value="{{ coverage_command }}" required />
+              <button type="submit">Save Command</button>
+            </form>
+          </article>
           {% if repo_error %}
           <div class="error">{{ repo_error }}</div>
           {% elif repo_snapshot %}
@@ -302,12 +330,28 @@
               <h2 class="panel-head">Local Branches ({{ repo_snapshot.local_branches|length }})</h2>
               <div class="table-wrap">
                 <table>
-                  <thead><tr><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
+                  <thead><tr><th>Coverage</th><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
                   <tbody>
                     {% for branch in repo_snapshot.local_branches %}
-                    <tr><td class="mono">{{ branch.name }}</td><td class="mono">{{ branch.commit }}</td><td>{{ branch.date }}</td><td>{{ branch.subject }}</td></tr>
+                    {% set cov = coverage_by_short.get(branch.commit) %}
+                    <tr>
+                      <td>
+                        {% if cov %}
+                        <span class="cov">{{ "%.2f"|format(cov.coverage_percent) }}%</span>
+                        {% else %}
+                        <form class="inline-form" action="/coverage/compute" method="post">
+                          <input type="hidden" name="ref" value="{{ branch.name }}" />
+                          <button class="compute-btn" type="submit">Compute</button>
+                        </form>
+                        {% endif %}
+                      </td>
+                      <td class="mono">{{ branch.name }}</td>
+                      <td class="mono">{{ branch.commit }}</td>
+                      <td>{{ branch.date }}</td>
+                      <td>{{ branch.subject }}</td>
+                    </tr>
                     {% else %}
-                    <tr><td colspan="4" class="empty">No local branches.</td></tr>
+                    <tr><td colspan="5" class="empty">No local branches.</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -318,12 +362,28 @@
               <h2 class="panel-head">Remote Branches ({{ repo_snapshot.remote_branches|length }})</h2>
               <div class="table-wrap">
                 <table>
-                  <thead><tr><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
+                  <thead><tr><th>Coverage</th><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
                   <tbody>
                     {% for branch in repo_snapshot.remote_branches %}
-                    <tr><td class="mono">{{ branch.name }}</td><td class="mono">{{ branch.commit }}</td><td>{{ branch.date }}</td><td>{{ branch.subject }}</td></tr>
+                    {% set cov = coverage_by_short.get(branch.commit) %}
+                    <tr>
+                      <td>
+                        {% if cov %}
+                        <span class="cov">{{ "%.2f"|format(cov.coverage_percent) }}%</span>
+                        {% else %}
+                        <form class="inline-form" action="/coverage/compute" method="post">
+                          <input type="hidden" name="ref" value="{{ branch.name }}" />
+                          <button class="compute-btn" type="submit">Compute</button>
+                        </form>
+                        {% endif %}
+                      </td>
+                      <td class="mono">{{ branch.name }}</td>
+                      <td class="mono">{{ branch.commit }}</td>
+                      <td>{{ branch.date }}</td>
+                      <td>{{ branch.subject }}</td>
+                    </tr>
                     {% else %}
-                    <tr><td colspan="4" class="empty">No remote branches.</td></tr>
+                    <tr><td colspan="5" class="empty">No remote branches.</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -334,12 +394,27 @@
               <h2 class="panel-head">Tags ({{ repo_snapshot.tags|length }})</h2>
               <div class="table-wrap">
                 <table>
-                  <thead><tr><th>Name</th><th>Commit</th><th>Date</th></tr></thead>
+                  <thead><tr><th>Coverage</th><th>Name</th><th>Commit</th><th>Date</th></tr></thead>
                   <tbody>
                     {% for tag in repo_snapshot.tags %}
-                    <tr><td class="mono">{{ tag.name }}</td><td class="mono">{{ tag.commit }}</td><td>{{ tag.date }}</td></tr>
+                    {% set cov = coverage_by_short.get(tag.commit) %}
+                    <tr>
+                      <td>
+                        {% if cov %}
+                        <span class="cov">{{ "%.2f"|format(cov.coverage_percent) }}%</span>
+                        {% else %}
+                        <form class="inline-form" action="/coverage/compute" method="post">
+                          <input type="hidden" name="ref" value="{{ tag.name }}" />
+                          <button class="compute-btn" type="submit">Compute</button>
+                        </form>
+                        {% endif %}
+                      </td>
+                      <td class="mono">{{ tag.name }}</td>
+                      <td class="mono">{{ tag.commit }}</td>
+                      <td>{{ tag.date }}</td>
+                    </tr>
                     {% else %}
-                    <tr><td colspan="3" class="empty">No tags.</td></tr>
+                    <tr><td colspan="4" class="empty">No tags.</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>

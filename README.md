@@ -57,13 +57,13 @@ Jean-Michel stores conversation data in DuckDB.
 You can force a specific database path with:
 
 ```bash
-JEAN_MICHEL_DB_PATH=/path/to/your/project/.jean-michel/conversation.duckdb uv run jm lm
+JEAN_MICHEL_DB_PATH=/path/to/your/project/.jean-michel/storage.duckdb uv run jm lm
 ```
 
 If this variable is not set, the default path is:
 
 ```text
-.jean-michel/conversation.duckdb
+.jean-michel/storage.duckdb
 ```
 
 ### API Port Strategy
@@ -76,6 +76,28 @@ To force a specific API port:
 ```bash
 JEAN_MICHEL_API_PORT=5656 make api
 ```
+
+### Coverage Command
+
+Coverage computation runs a command in an isolated worktree at the target commit.
+
+Default command:
+
+```text
+uv run pytest --cov --cov-report=xml
+```
+
+Override it per repository if needed:
+
+```bash
+JEAN_MICHEL_COVERAGE_CMD="uv run pytest --cov --cov-report=xml --cov=your_package" uv run jm api
+```
+
+You can also manage this command at runtime:
+
+- in the web app (Repository tab, "Coverage Command" panel)
+- via API: `GET /api/coverage/command`, `POST /api/coverage/command`
+- via MCP tools: `get_coverage_command`, `set_coverage_command`
 
 ---
 

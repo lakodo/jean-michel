@@ -52,13 +52,13 @@ Use workspace-level config if you want this server only for the current reposito
 - Working directory: your project root where `jean-michel` is installed
   - Example: `/path/to/your/project`
 - Optional environment:
-  - `JEAN_MICHEL_DB_PATH=/path/to/your/project/.jean-michel/conversation.duckdb`
+  - `JEAN_MICHEL_DB_PATH=/path/to/your/project/.jean-michel/storage.duckdb`
 
 `JEAN_MICHEL_DB_PATH` defines the exact DuckDB file used by Jean-Michel.
 If omitted, Jean-Michel uses the default repository-local path:
 
 ```text
-.jean-michel/conversation.duckdb
+.jean-michel/storage.duckdb
 ```
 
 ## Verify it works

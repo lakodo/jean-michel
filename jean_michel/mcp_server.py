@@ -6,8 +6,9 @@ from typing import Literal
 
 from mcp.server.fastmcp import FastMCP
 
+from jean_michel.metrics import CoverageComputationError
 from jean_michel.models import Actor, MessageRecord
-from jean_michel.services import ConversationService
+from jean_michel.services import ConversationService, MetricsService
 from jean_michel.settings import get_db_path
 from jean_michel.storage import DuckDBConversationStore
 
@@ -16,6 +17,10 @@ Transport = Literal["stdio", "sse", "streamable-http"]
 
 def _service() -> ConversationService:
     return ConversationService(DuckDBConversationStore(get_db_path()))
+
+
+def _metrics() -> MetricsService:
+    return MetricsService(DuckDBConversationStore(get_db_path()))
 
 
 def _serialize_message(message: MessageRecord) -> dict[str, str | int]:
@@ -70,6 +75,61 @@ def create_mcp_server(host: str = "127.0.0.1", port: int = 8001) -> FastMCP:
 
         actor = _service().default_actor()
         return {"name": actor.name, "email": actor.email}
+
+    @server.tool()
+    def get_coverage(ref: str) -> dict[str, str | int | float | bool]:
+        """Get cached coverage for a reference if available."""
+
+        try:
+            report = _metrics().get_cached_coverage_for_ref(ref)
+        except CoverageComputationError as exc:
+            return {"found": False, "error": str(exc)}
+
+        if report is None:
+            return {"found": False}
+
+        return {
+            "found": True,
+            "id": report.id,
+            "repo_identity": report.repo_identity,
+            "ref": report.ref,
+            "commit_hash": report.commit_hash,
+            "commit_short": report.commit_short,
+            "coverage_percent": report.coverage_percent,
+            "line_rate": report.line_rate,
+            "command": report.command,
+            "created_at": report.created_at.isoformat(),
+        }
+
+    @server.tool()
+    def compute_coverage(ref: str, force: bool = False) -> dict[str, str | int | float | bool]:
+        """Compute and store coverage for a reference."""
+
+        report, cached = _metrics().compute_coverage_for_ref(ref=ref, force=force)
+        return {
+            "cached": cached,
+            "id": report.id,
+            "repo_identity": report.repo_identity,
+            "ref": report.ref,
+            "commit_hash": report.commit_hash,
+            "commit_short": report.commit_short,
+            "coverage_percent": report.coverage_percent,
+            "line_rate": report.line_rate,
+            "command": report.command,
+            "created_at": report.created_at.isoformat(),
+        }
+
+    @server.tool()
+    def get_coverage_command() -> dict[str, str]:
+        """Return current configured coverage command for this repository."""
+
+        return {"command": _metrics().get_coverage_command()}
+
+    @server.tool()
+    def set_coverage_command(command: str) -> dict[str, str]:
+        """Update coverage command for this repository."""
+
+        return {"command": _metrics().set_coverage_command(command)}
 
     return server
 
