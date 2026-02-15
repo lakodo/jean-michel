@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal, cast
+
 import typer
 import uvicorn
 
@@ -56,8 +58,9 @@ def _start_mcp_server(transport: str, host: str, port: int) -> None:
     if normalized_transport not in valid_transports:
         raise typer.BadParameter("transport must be one of: stdio, sse, streamable-http")  # noqa: TRY003
 
+    typed_transport = cast(Literal["stdio", "sse", "streamable-http"], normalized_transport)
     typer.echo(f"Starting MCP server with transport={normalized_transport}")
-    run_mcp_server(transport=normalized_transport, host=host, port=port)
+    run_mcp_server(transport=typed_transport, host=host, port=port)
 
 
 def _start_api_server(host: str, port: int | None, reload_server: bool) -> None:

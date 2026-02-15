@@ -72,6 +72,8 @@ class DuckDBConversationStore:
                 """,
                 [message.content, message.actor.name, message.actor.email],
             ).fetchone()
+        if row is None:
+            raise RuntimeError("Insert message returned no row")  # noqa: TRY003
 
         return MessageRecord(
             id=row[0],
@@ -181,6 +183,8 @@ class DuckDBConversationStore:
                 """,
                 [repo_identity, commit_hash],
             ).fetchone()
+        if row is None:
+            raise RuntimeError("Coverage upsert returned no row")  # noqa: TRY003
 
         return self._coverage_from_row(row)
 
@@ -216,5 +220,7 @@ class DuckDBConversationStore:
                 """,
                 [repo_identity, key],
             ).fetchone()
+        if row is None:
+            raise RuntimeError("Setting upsert returned no row")  # noqa: TRY003
 
         return row[0]
