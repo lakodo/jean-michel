@@ -14,7 +14,7 @@ def find_repo_root(start: Path | None = None) -> Path:
     cwd = start or Path.cwd()
     try:
         output = subprocess.check_output(
-            ["git", "rev-parse", "--show-toplevel"],
+            ["git", "rev-parse", "--show-toplevel"],  # noqa: S607
             cwd=cwd,
             stderr=subprocess.DEVNULL,
             text=True,
@@ -26,8 +26,8 @@ def find_repo_root(start: Path | None = None) -> Path:
 
 def _git_value(args: list[str], cwd: Path) -> str | None:
     try:
-        return subprocess.check_output(
-            ["git", *args],
+        return subprocess.check_output(  # noqa: S603
+            ["git", *args],  # noqa: S607
             cwd=cwd,
             stderr=subprocess.DEVNULL,
             text=True,
@@ -54,7 +54,7 @@ def get_default_api_port(start: Path | None = None) -> int:
         return int(env_port)
 
     identity = get_repo_identity(start)
-    digest = hashlib.sha1(identity.encode("utf-8")).hexdigest()
+    digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()
     bucket = int(digest[:8], 16) % 1000
     return 5600 + bucket
 

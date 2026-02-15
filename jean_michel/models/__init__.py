@@ -15,15 +15,15 @@ from jean_michel.models.repository import (
 
 __all__ = [
     "Actor",
+    "BranchRecord",
+    "CommitComparison",
+    "CommitDescriptor",
+    "CommitRefRecord",
+    "CompareFileRecord",
+    "CoverageRecord",
     "MessageCreate",
     "MessageRecord",
-    "CoverageRecord",
-    "BranchRecord",
+    "RepositorySnapshot",
     "TagRecord",
     "WorktreeRecord",
-    "RepositorySnapshot",
-    "CommitRefRecord",
-    "CommitDescriptor",
-    "CompareFileRecord",
-    "CommitComparison",
 ]

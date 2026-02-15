@@ -27,9 +27,14 @@ def _coverage_env() -> dict[str, str]:
 
 def _run_git(args: list[str], repo_root: Path) -> str:
     try:
-        return subprocess.check_output(["git", *args], cwd=repo_root, text=True, stderr=subprocess.STDOUT).strip()
+        return subprocess.check_output(  # noqa: S603
+            ["git", *args],  # noqa: S607
+            cwd=repo_root,
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).strip()
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-        raise CoverageComputationError("Git command failed while computing coverage") from exc
+        raise CoverageComputationError("Git command failed while computing coverage") from exc  # noqa: TRY003
 
 
 def resolve_ref_commit(repo_root: Path, ref: str) -> tuple[str, str]:
@@ -37,7 +42,7 @@ def resolve_ref_commit(repo_root: Path, ref: str) -> tuple[str, str]:
 
     normalized = ref.strip()
     if not normalized:
-        raise CoverageComputationError("Reference cannot be empty")
+        raise CoverageComputationError("Reference cannot be empty")  # noqa: TRY003
 
     full_hash = _run_git(["rev-parse", normalized], repo_root)
     short_hash = _run_git(["rev-parse", "--short=7", normalized], repo_root)
@@ -48,13 +53,13 @@ def parse_coverage_xml(path: Path) -> tuple[float, float]:
     """Return (line_rate, percentage) from a coverage.xml file."""
 
     if not path.exists():
-        raise CoverageComputationError("coverage.xml not found after test command")
+        raise CoverageComputationError("coverage.xml not found after test command")  # noqa: TRY003
 
     try:
-        root = ET.parse(path).getroot()
+        root = ET.parse(path).getroot()  # noqa: S314
         line_rate = float(root.attrib["line-rate"])
     except (ET.ParseError, KeyError, ValueError) as exc:
-        raise CoverageComputationError("Unable to parse coverage.xml") from exc
+        raise CoverageComputationError("Unable to parse coverage.xml") from exc  # noqa: TRY003
 
     percentage = round(line_rate * 100, 2)
     return line_rate, percentage
@@ -75,17 +80,17 @@ def compute_coverage_for_ref(
     with tempfile.TemporaryDirectory(prefix="jm-cov-") as tmp_dir:
         worktree_path = Path(tmp_dir)
         try:
-            subprocess.check_call(
-                ["git", "worktree", "add", "--detach", str(worktree_path), commit_hash],
+            subprocess.check_call(  # noqa: S603
+                ["git", "worktree", "add", "--detach", str(worktree_path), commit_hash],  # noqa: S607
                 cwd=repo_root,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
         except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-            raise CoverageComputationError("Unable to create temporary worktree for coverage") from exc
+            raise CoverageComputationError("Unable to create temporary worktree for coverage") from exc  # noqa: TRY003
 
         try:
-            process = subprocess.run(
+            process = subprocess.run(  # noqa: S602
                 command,
                 cwd=worktree_path,
                 shell=True,
@@ -101,8 +106,8 @@ def compute_coverage_for_ref(
             line_rate, percentage = parse_coverage_xml(worktree_path / "coverage.xml")
             return commit_hash, commit_short, line_rate, percentage
         finally:
-            subprocess.run(
-                ["git", "worktree", "remove", "--force", str(worktree_path)],
+            subprocess.run(  # noqa: S603
+                ["git", "worktree", "remove", "--force", str(worktree_path)],  # noqa: S607
                 cwd=repo_root,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,

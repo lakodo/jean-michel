@@ -33,7 +33,7 @@ def _serialize_message(message: MessageRecord) -> dict[str, str | int]:
     }
 
 
-def create_mcp_server(host: str = "127.0.0.1", port: int = 8001) -> FastMCP:
+def create_mcp_server(host: str = "127.0.0.1", port: int = 8001) -> FastMCP:  # noqa: C901
     """Create the MCP server for conversation operations."""
 
     server = FastMCP(
@@ -63,7 +63,7 @@ def create_mcp_server(host: str = "127.0.0.1", port: int = 8001) -> FastMCP:
         actor: Actor | None = None
         if actor_name or actor_email:
             if not actor_name or not actor_email:
-                raise ValueError("actor_name and actor_email must be provided together")
+                raise ValueError("actor_name and actor_email must be provided together")  # noqa: TRY003
             actor = Actor(name=actor_name, email=actor_email)
 
         created = _service().send_message(content=content, actor=actor)

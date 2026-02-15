@@ -19,9 +19,14 @@ from jean_michel.models import (
 
 def _run_git(args: list[str], repo_root: Path) -> str:
     try:
-        return subprocess.check_output(["git", *args], cwd=repo_root, text=True, stderr=subprocess.DEVNULL)
+        return subprocess.check_output(  # noqa: S603
+            ["git", *args],  # noqa: S607
+            cwd=repo_root,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-        raise RuntimeError("Git command failed") from exc
+        raise RuntimeError("Git command failed") from exc  # noqa: TRY003
 
 
 def _parse_branch_lines(raw: str) -> list[BranchRecord]:
@@ -29,7 +34,7 @@ def _parse_branch_lines(raw: str) -> list[BranchRecord]:
     for line in raw.splitlines():
         if not line.strip():
             continue
-        name, commit, date, subject = (line.split("|", maxsplit=3) + ["", "", "", ""])[:4]
+        name, commit, date, subject = [*line.split("|", maxsplit=3), "", "", "", ""][:4]
         result.append(BranchRecord(name=name, commit=commit, date=date, subject=subject))
     return result
 
@@ -39,7 +44,7 @@ def _parse_tag_lines(raw: str) -> list[TagRecord]:
     for line in raw.splitlines():
         if not line.strip():
             continue
-        name, commit, date = (line.split("|", maxsplit=2) + ["", "", ""])[:3]
+        name, commit, date = [*line.split("|", maxsplit=2), "", "", ""][:3]
         result.append(TagRecord(name=name, commit=commit, date=date))
     return result
 
@@ -161,7 +166,7 @@ def list_reference_candidates(
 def _resolve_commit(repo_root: Path, ref: str) -> CommitDescriptor:
     normalized_ref = ref.strip()
     if not normalized_ref:
-        raise ValueError("Reference cannot be empty")
+        raise ValueError("Reference cannot be empty")  # noqa: TRY003
 
     raw = _run_git(
         [
@@ -173,7 +178,7 @@ def _resolve_commit(repo_root: Path, ref: str) -> CommitDescriptor:
         repo_root,
     ).strip()
 
-    full_hash, short_hash, date, subject = (raw.split("|", maxsplit=3) + ["", "", "", ""])[:4]
+    full_hash, short_hash, date, subject = [*raw.split("|", maxsplit=3), "", "", "", ""][:4]
     return CommitDescriptor(
         ref=normalized_ref,
         full_hash=full_hash,

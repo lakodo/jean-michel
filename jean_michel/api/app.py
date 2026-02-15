@@ -16,7 +16,7 @@ from jean_michel.settings import find_repo_root, get_db_path, get_default_api_po
 from jean_michel.storage import DuckDBConversationStore
 
 
-def create_app() -> FastAPI:
+def create_app() -> FastAPI:  # noqa: C901
     app = FastAPI(title="Jean-Michel Conversation")
     store = DuckDBConversationStore(get_db_path())
     service = ConversationService(store)
@@ -163,9 +163,10 @@ def create_app() -> FastAPI:
     def compute_coverage_api(ref: str = Form(...), force: bool = Form(False)):
         try:
             report, cached = metrics.compute_coverage_for_ref(ref=ref, force=force)
-            return {"cached": cached, "report": report}
         except CoverageComputationError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+        else:
+            return {"cached": cached, "report": report}
 
     @app.get("/api/coverage/command")
     def get_coverage_command_api():

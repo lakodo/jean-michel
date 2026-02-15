@@ -16,8 +16,8 @@ class GitIdentityError(RuntimeError):
 
 def _git_config_value(key: str, cwd: Path) -> str | None:
     try:
-        value = subprocess.check_output(
-            ["git", "config", "--get", key],
+        value = subprocess.check_output(  # noqa: S603
+            ["git", "config", "--get", key],  # noqa: S607
             cwd=cwd,
             stderr=subprocess.DEVNULL,
             text=True,

@@ -47,6 +47,10 @@ def test_cli_send_and_list_alias(tmp_path: Path, monkeypatch):
     assert list_subcommand_result.exit_code == 0
     assert "what's up?" in list_subcommand_result.stdout
 
+    list_default_result = runner.invoke(app, ["list"])
+    assert list_default_result.exit_code == 0
+    assert "what's up?" in list_default_result.stdout
+
 
 def test_cli_mcp_without_subcommand_starts_server(monkeypatch):
     captured: dict[str, object] = {}
@@ -114,12 +118,12 @@ def test_cli_api_accepts_explicit_port(monkeypatch):
     monkeypatch.setattr(cli_module.uvicorn, "run", fake_uvicorn_run)
     runner = CliRunner()
 
-    result = runner.invoke(app, ["api", "--host", "0.0.0.0", "--port", "7777", "--reload"])
+    result = runner.invoke(app, ["api", "--host", "0.0.0.0", "--port", "7777", "--reload"])  # noqa: S104
 
     assert result.exit_code == 0
     assert captured == {
         "app_path": "jean_michel.api.app:app",
-        "host": "0.0.0.0",
+        "host": "0.0.0.0",  # noqa: S104
         "port": 7777,
         "reload": True,
     }

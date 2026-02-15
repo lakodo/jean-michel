@@ -54,7 +54,7 @@ def _start_mcp_server(transport: str, host: str, port: int) -> None:
     valid_transports = {"stdio", "sse", "streamable-http"}
     normalized_transport = transport.strip().lower()
     if normalized_transport not in valid_transports:
-        raise typer.BadParameter("transport must be one of: stdio, sse, streamable-http")
+        raise typer.BadParameter("transport must be one of: stdio, sse, streamable-http")  # noqa: TRY003
 
     typer.echo(f"Starting MCP server with transport={normalized_transport}")
     run_mcp_server(transport=normalized_transport, host=host, port=port)
@@ -64,6 +64,18 @@ def _start_api_server(host: str, port: int | None, reload_server: bool) -> None:
     resolved_port = port if port is not None else get_default_api_port()
     typer.echo(f"Starting API server on http://{host}:{resolved_port}")
     uvicorn.run("jean_michel.api.app:app", host=host, port=resolved_port, reload=reload_server)
+
+
+@list_app.callback(invoke_without_command=True)
+def list_default(
+    ctx: typer.Context,
+    limit: int = typer.Option(100, min=1, help="Maximum number of messages"),
+) -> None:
+    """Default `list` behavior: list messages."""
+
+    if ctx.invoked_subcommand is not None:
+        return
+    _print_messages(limit)
 
 
 @list_app.command("messages")

@@ -16,14 +16,14 @@ class ConversationService:
     def send_message(self, content: str, actor: Actor | None = None) -> MessageRecord:
         normalized_content = content.strip()
         if not normalized_content:
-            raise ValueError("Message content cannot be empty")
+            raise ValueError("Message content cannot be empty")  # noqa: TRY003
 
         message = MessageCreate(content=normalized_content, actor=actor or resolve_default_actor())
         return self.store.insert_message(message)
 
     def list_messages(self, limit: int = 100) -> list[MessageRecord]:
         if limit <= 0:
-            raise ValueError("limit must be positive")
+            raise ValueError("limit must be positive")  # noqa: TRY003
         return self.store.list_messages(limit=limit)
 
     def default_actor(self) -> Actor:

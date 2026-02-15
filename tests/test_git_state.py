@@ -19,7 +19,7 @@ detached
     parsed = parse_worktree_porcelain(raw)
 
     assert len(parsed) == 2
-    assert parsed[0].path == "/tmp/repo"
+    assert parsed[0].path == "/tmp/repo"  # noqa: S108
     assert parsed[0].head == "0123456789ab"
     assert parsed[0].branch == "main"
     assert parsed[0].detached is False
@@ -41,7 +41,7 @@ def test_inspect_repository(monkeypatch):
 
     monkeypatch.setattr(git_state, "_run_git", fake_run_git)
 
-    snapshot = inspect_repository(Path("/tmp/repo"))
+    snapshot = inspect_repository(Path("/tmp/repo"))  # noqa: S108
 
     assert snapshot.local_branches[0].name == "main"
     assert snapshot.remote_branches[0].name == "origin/main"
@@ -60,10 +60,10 @@ def test_list_reference_candidates(monkeypatch):
 
     monkeypatch.setattr(git_state, "_run_git", fake_run_git)
 
-    refs = list_reference_candidates(Path("/tmp/repo"))
+    refs = list_reference_candidates(Path("/tmp/repo"))  # noqa: S108
     assert [ref.name for ref in refs] == ["main", "origin/main", "v0.1.0", "abc1234", "def5678"]
 
-    filtered = list_reference_candidates(Path("/tmp/repo"), query="abc")
+    filtered = list_reference_candidates(Path("/tmp/repo"), query="abc")  # noqa: S108
     assert [ref.name for ref in filtered] == ["abc1234"]
 
 
@@ -82,7 +82,7 @@ def test_compare_refs(monkeypatch):
 
     monkeypatch.setattr(git_state, "_run_git", fake_run_git)
 
-    result = compare_refs(Path("/tmp/repo"), "main", "feature")
+    result = compare_refs(Path("/tmp/repo"), "main", "feature")  # noqa: S108
 
     assert result.base.ref == "main"
     assert result.target.ref == "feature"

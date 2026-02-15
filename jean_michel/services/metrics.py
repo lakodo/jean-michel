@@ -26,7 +26,7 @@ class MetricsService:
     def set_coverage_command(self, command: str) -> str:
         normalized = command.strip()
         if not normalized:
-            raise ValueError("Coverage command cannot be empty")
+            raise ValueError("Coverage command cannot be empty")  # noqa: TRY003
         return self.store.set_repo_setting(self.repo_identity, self._coverage_command_key, normalized)
 
     def get_cached_coverage_for_ref(self, ref: str) -> CoverageRecord | None:
@@ -68,4 +68,4 @@ class MetricsService:
         return stored, False
 
 
-__all__ = ["MetricsService", "CoverageComputationError"]
+__all__ = ["CoverageComputationError", "MetricsService"]
