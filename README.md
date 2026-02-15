@@ -1,5 +1,10 @@
 # Jean-Michel
 
+> [!WARNING]
+> **WIP / Early stage project.**
+> Jean-Michel is not ready for real installation/production use yet: the architecture and APIs are still moving.
+> By the time this is fully polished, maybe Devstral 42 or ChatGPT 10.12 will exist and make this whole thing gloriously obsolete.
+
 [![Release](https://img.shields.io/github/v/release/lakodo/jean-michel)](https://github.com/lakodo/jean-michel/releases)
 [![Build status](https://img.shields.io/github/actions/workflow/status/lakodo/jean-michel/main.yml?branch=main)](https://github.com/lakodo/jean-michel/actions/workflows/main.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/lakodo/jean-michel/branch/main/graph/badge.svg)](https://codecov.io/gh/lakodo/jean-michel)
