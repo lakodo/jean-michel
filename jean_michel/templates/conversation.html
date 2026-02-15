@@ -116,7 +116,15 @@
         font: inherit;
         background: #fff;
       }
-      textarea:focus {
+      input[type="text"] {
+        width: 100%;
+        border: 1px solid #b9c6dd;
+        border-radius: 12px;
+        padding: 0.6rem 0.7rem;
+        font: inherit;
+        background: #fff;
+      }
+      textarea:focus, input[type="text"]:focus {
         outline: 2px solid rgba(15, 109, 255, 0.23);
         border-color: var(--brand);
       }
@@ -153,7 +161,7 @@
       }
       .message-content { margin-top: 0.45rem; white-space: pre-wrap; }
       .empty { color: var(--muted); }
-      .repo-section { padding: 1rem 1.2rem 1.2rem; }
+      .repo-section, .compare-section { padding: 1rem 1.2rem 1.2rem; }
       .repo-layout { display: grid; gap: 1rem; }
       .panel {
         border: 1px solid var(--line);
@@ -175,7 +183,13 @@
         padding: 0.5rem 0.65rem;
         white-space: nowrap;
       }
-      th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+      th {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
       .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
       .error {
         border: 1px solid rgba(190, 24, 93, 0.22);
@@ -184,6 +198,30 @@
         border-radius: 12px;
         padding: 0.7rem 0.8rem;
         font-weight: 600;
+      }
+      .compare-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 0.7rem;
+        align-items: end;
+      }
+      .compare-form .field { display: grid; gap: 0.35rem; }
+      .compare-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.65rem;
+        margin-bottom: 0.9rem;
+      }
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 0.6rem 0.7rem;
+        background: rgba(255, 255, 255, 0.82);
+      }
+      .stat .k { font-size: 0.76rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+      .stat .v { font-weight: 700; margin-top: 0.2rem; }
+      @media (max-width: 900px) {
+        .compare-form { grid-template-columns: 1fr; }
       }
       @media (max-width: 760px) {
         .shell { margin: 1rem auto; }
@@ -206,6 +244,7 @@
         <nav class="tabs">
           <a class="tab {% if active_tab == 'conversation' %}active{% endif %}" href="/?tab=conversation">Conversation</a>
           <a class="tab {% if active_tab == 'repository' %}active{% endif %}" href="/?tab=repository">Repository</a>
+          <a class="tab {% if active_tab == 'compare' %}active{% endif %}" href="/?tab=compare">Compare</a>
         </nav>
 
         <section class="meta-grid">
@@ -266,12 +305,7 @@
                   <thead><tr><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
                   <tbody>
                     {% for branch in repo_snapshot.local_branches %}
-                    <tr>
-                      <td class="mono">{{ branch.name }}</td>
-                      <td class="mono">{{ branch.commit }}</td>
-                      <td>{{ branch.date }}</td>
-                      <td>{{ branch.subject }}</td>
-                    </tr>
+                    <tr><td class="mono">{{ branch.name }}</td><td class="mono">{{ branch.commit }}</td><td>{{ branch.date }}</td><td>{{ branch.subject }}</td></tr>
                     {% else %}
                     <tr><td colspan="4" class="empty">No local branches.</td></tr>
                     {% endfor %}
@@ -287,12 +321,7 @@
                   <thead><tr><th>Name</th><th>Commit</th><th>Date</th><th>Subject</th></tr></thead>
                   <tbody>
                     {% for branch in repo_snapshot.remote_branches %}
-                    <tr>
-                      <td class="mono">{{ branch.name }}</td>
-                      <td class="mono">{{ branch.commit }}</td>
-                      <td>{{ branch.date }}</td>
-                      <td>{{ branch.subject }}</td>
-                    </tr>
+                    <tr><td class="mono">{{ branch.name }}</td><td class="mono">{{ branch.commit }}</td><td>{{ branch.date }}</td><td>{{ branch.subject }}</td></tr>
                     {% else %}
                     <tr><td colspan="4" class="empty">No remote branches.</td></tr>
                     {% endfor %}
@@ -308,11 +337,7 @@
                   <thead><tr><th>Name</th><th>Commit</th><th>Date</th></tr></thead>
                   <tbody>
                     {% for tag in repo_snapshot.tags %}
-                    <tr>
-                      <td class="mono">{{ tag.name }}</td>
-                      <td class="mono">{{ tag.commit }}</td>
-                      <td>{{ tag.date }}</td>
-                    </tr>
+                    <tr><td class="mono">{{ tag.name }}</td><td class="mono">{{ tag.commit }}</td><td>{{ tag.date }}</td></tr>
                     {% else %}
                     <tr><td colspan="3" class="empty">No tags.</td></tr>
                     {% endfor %}
@@ -328,12 +353,7 @@
                   <thead><tr><th>Path</th><th>Head</th><th>Branch</th><th>Detached</th></tr></thead>
                   <tbody>
                     {% for wt in repo_snapshot.worktrees %}
-                    <tr>
-                      <td class="mono">{{ wt.path }}</td>
-                      <td class="mono">{{ wt.head }}</td>
-                      <td class="mono">{{ wt.branch or '-' }}</td>
-                      <td>{{ 'yes' if wt.detached else 'no' }}</td>
-                    </tr>
+                    <tr><td class="mono">{{ wt.path }}</td><td class="mono">{{ wt.head }}</td><td class="mono">{{ wt.branch or '-' }}</td><td>{{ 'yes' if wt.detached else 'no' }}</td></tr>
                     {% else %}
                     <tr><td colspan="4" class="empty">No worktrees.</td></tr>
                     {% endfor %}
@@ -345,7 +365,107 @@
           {% endif %}
         </section>
         {% endif %}
+
+        {% if active_tab == "compare" %}
+        <section class="compare-section">
+          <form action="/" method="get" class="compare-form">
+            <input type="hidden" name="tab" value="compare" />
+            <div class="field">
+              <label for="base_ref">Base (branch/tag/hash)</label>
+              <input id="base_ref" name="base_ref" type="text" value="{{ base_ref }}" list="ref-suggestions" data-ref-input required />
+            </div>
+            <div class="field">
+              <label for="target_ref">Target (branch/tag/hash)</label>
+              <input id="target_ref" name="target_ref" type="text" value="{{ target_ref }}" list="ref-suggestions" data-ref-input required />
+            </div>
+            <button type="submit">Compare</button>
+            <datalist id="ref-suggestions">
+              {% for ref in ref_candidates %}
+              <option value="{{ ref.name }}"></option>
+              {% endfor %}
+            </datalist>
+          </form>
+
+          {% if compare_error %}
+          <div class="error">{{ compare_error }}</div>
+          {% endif %}
+
+          {% if compare_result %}
+          <div class="compare-stats">
+            <div class="stat"><div class="k">Base</div><div class="v mono">{{ compare_result.base.ref }} ({{ compare_result.base.short_hash }})</div></div>
+            <div class="stat"><div class="k">Target</div><div class="v mono">{{ compare_result.target.ref }} ({{ compare_result.target.short_hash }})</div></div>
+            <div class="stat"><div class="k">Ahead</div><div class="v">{{ compare_result.ahead_count }}</div></div>
+            <div class="stat"><div class="k">Behind</div><div class="v">{{ compare_result.behind_count }}</div></div>
+            <div class="stat"><div class="k">Files Changed</div><div class="v">{{ compare_result.files_changed }}</div></div>
+            <div class="stat"><div class="k">Additions / Deletions</div><div class="v">+{{ compare_result.total_additions }} / -{{ compare_result.total_deletions }}</div></div>
+          </div>
+
+          <article class="panel">
+            <h2 class="panel-head">Changed Files</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Path</th><th>Additions</th><th>Deletions</th></tr></thead>
+                <tbody>
+                  {% for file in compare_result.files %}
+                  <tr><td class="mono">{{ file.path }}</td><td>+{{ file.additions }}</td><td>-{{ file.deletions }}</td></tr>
+                  {% else %}
+                  <tr><td colspan="3" class="empty">No changed files.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </article>
+          {% endif %}
+        </section>
+        {% endif %}
       </section>
     </main>
+    <script>
+      (function setupRefAutocomplete() {
+        const datalist = document.getElementById("ref-suggestions");
+        if (!datalist) return;
+        const inputs = Array.from(document.querySelectorAll("[data-ref-input]"));
+        if (!inputs.length) return;
+
+        let timer = null;
+        let lastQuery = "";
+        let abortController = null;
+
+        async function refreshSuggestions(query) {
+          if (query === lastQuery) return;
+          lastQuery = query;
+          if (abortController) {
+            abortController.abort();
+          }
+          abortController = new AbortController();
+          const url = "/api/references?q=" + encodeURIComponent(query) + "&limit=30";
+          const response = await fetch(url, { signal: abortController.signal });
+          if (!response.ok) return;
+          const refs = await response.json();
+          datalist.innerHTML = "";
+          refs.forEach((entry) => {
+            const option = document.createElement("option");
+            option.value = entry.name;
+            datalist.appendChild(option);
+          });
+        }
+
+        function queue(query) {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            refreshSuggestions(query).catch(() => {});
+          }, 120);
+        }
+
+        inputs.forEach((input) => {
+          input.addEventListener("input", (event) => {
+            queue(event.target.value || "");
+          });
+          input.addEventListener("focus", (event) => {
+            queue(event.target.value || "");
+          });
+        });
+      })();
+    </script>
   </body>
 </html>

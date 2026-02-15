@@ -5,7 +5,16 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from jean_michel.models import BranchRecord, RepositorySnapshot, TagRecord, WorktreeRecord
+from jean_michel.models import (
+    BranchRecord,
+    CommitComparison,
+    CommitDescriptor,
+    CommitRefRecord,
+    CompareFileRecord,
+    RepositorySnapshot,
+    TagRecord,
+    WorktreeRecord,
+)
 
 
 def _run_git(args: list[str], repo_root: Path) -> str:
@@ -100,4 +109,114 @@ def inspect_repository(repo_root: Path) -> RepositorySnapshot:
         remote_branches=_parse_branch_lines(remote_raw),
         tags=_parse_tag_lines(tags_raw),
         worktrees=parse_worktree_porcelain(worktrees_raw),
+    )
+
+
+def list_reference_candidates(
+    repo_root: Path,
+    max_commits: int = 200,
+    query: str | None = None,
+    limit: int = 50,
+) -> list[CommitRefRecord]:
+    """Return reference candidates for compare inputs."""
+
+    refs_raw = _run_git(
+        [
+            "for-each-ref",
+            "refs/heads",
+            "refs/remotes",
+            "refs/tags",
+            "--sort=-committerdate",
+            "--format=%(refname:short)",
+        ],
+        repo_root,
+    )
+    commits_raw = _run_git(
+        [
+            "log",
+            f"-n{max_commits}",
+            "--pretty=format:%h",
+        ],
+        repo_root,
+    )
+
+    normalized_query = (query or "").strip().lower()
+    seen: set[str] = set()
+    result: list[CommitRefRecord] = []
+
+    for value in [*refs_raw.splitlines(), *commits_raw.splitlines()]:
+        normalized = value.strip()
+        if not normalized or normalized in seen:
+            continue
+        if normalized_query and normalized_query not in normalized.lower():
+            continue
+        seen.add(normalized)
+        result.append(CommitRefRecord(name=normalized))
+        if len(result) >= limit:
+            break
+
+    return result
+
+
+def _resolve_commit(repo_root: Path, ref: str) -> CommitDescriptor:
+    normalized_ref = ref.strip()
+    if not normalized_ref:
+        raise ValueError("Reference cannot be empty")
+
+    raw = _run_git(
+        [
+            "show",
+            "-s",
+            "--format=%H|%h|%cs|%s",
+            normalized_ref,
+        ],
+        repo_root,
+    ).strip()
+
+    full_hash, short_hash, date, subject = (raw.split("|", maxsplit=3) + ["", "", "", ""])[:4]
+    return CommitDescriptor(
+        ref=normalized_ref,
+        full_hash=full_hash,
+        short_hash=short_hash,
+        date=date,
+        subject=subject,
+    )
+
+
+def compare_refs(repo_root: Path, base_ref: str, target_ref: str) -> CommitComparison:
+    """Compare two references by commit hash/branch/tag."""
+
+    base = _resolve_commit(repo_root, base_ref)
+    target = _resolve_commit(repo_root, target_ref)
+
+    ahead_count_raw = _run_git(["rev-list", "--count", f"{base.full_hash}..{target.full_hash}"], repo_root).strip()
+    behind_count_raw = _run_git(["rev-list", "--count", f"{target.full_hash}..{base.full_hash}"], repo_root).strip()
+    numstat_raw = _run_git(["diff", "--numstat", base.full_hash, target.full_hash], repo_root)
+
+    files: list[CompareFileRecord] = []
+    total_additions = 0
+    total_deletions = 0
+
+    for line in numstat_raw.splitlines():
+        if not line.strip():
+            continue
+        parts = line.split("\t")
+        if len(parts) < 3:
+            continue
+        raw_additions, raw_deletions, path = parts[0], parts[1], parts[2]
+        additions = int(raw_additions) if raw_additions.isdigit() else 0
+        deletions = int(raw_deletions) if raw_deletions.isdigit() else 0
+        total_additions += additions
+        total_deletions += deletions
+        files.append(CompareFileRecord(path=path, additions=additions, deletions=deletions))
+
+    return CommitComparison(
+        base=base,
+        target=target,
+        ahead_count=int(ahead_count_raw or "0"),
+        behind_count=int(behind_count_raw or "0"),
+        files_changed=len(files),
+        total_additions=total_additions,
+        total_deletions=total_deletions,
+        files=files,
     )

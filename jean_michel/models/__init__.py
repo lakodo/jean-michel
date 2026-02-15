@@ -1,7 +1,16 @@
 """Domain models for conversation entities."""
 
 from jean_michel.models.message import Actor, MessageCreate, MessageRecord
-from jean_michel.models.repository import BranchRecord, RepositorySnapshot, TagRecord, WorktreeRecord
+from jean_michel.models.repository import (
+    BranchRecord,
+    CommitComparison,
+    CommitDescriptor,
+    CommitRefRecord,
+    CompareFileRecord,
+    RepositorySnapshot,
+    TagRecord,
+    WorktreeRecord,
+)
 
 __all__ = [
     "Actor",
@@ -11,4 +20,8 @@ __all__ = [
     "TagRecord",
     "WorktreeRecord",
     "RepositorySnapshot",
+    "CommitRefRecord",
+    "CommitDescriptor",
+    "CompareFileRecord",
+    "CommitComparison",
 ]
