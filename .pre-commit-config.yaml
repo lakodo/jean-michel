@@ -1,9 +1,19 @@
 repos:
   - repo: local
     hooks:
+      - id: uv-lock-locked
+        name: uv lock --locked
+        entry: uv lock --locked
+        language: system
+        pass_filenames: false
       - id: ty-check
         name: ty check
         entry: uv run ty check
+        language: system
+        pass_filenames: false
+      - id: deptry
+        name: deptry
+        entry: uv run deptry .
         language: system
         pass_filenames: false
 
