@@ -1,7 +1,20 @@
 # Jean-Michel
 
+[![Release](https://img.shields.io/github/v/release/lakodo/jean-michel)](https://github.com/lakodo/jean-michel/releases)
+[![Build status](https://img.shields.io/github/actions/workflow/status/lakodo/jean-michel/main.yml?branch=main)](https://github.com/lakodo/jean-michel/actions/workflows/main.yml?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/lakodo/jean-michel/branch/main/graph/badge.svg)](https://codecov.io/gh/lakodo/jean-michel)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/lakodo/jean-michel)](https://github.com/lakodo/jean-michel/commits/main)
+[![License](https://img.shields.io/github/license/lakodo/jean-michel)](https://github.com/lakodo/jean-michel/blob/main/LICENSE)
+
 **An opinionated AI assistant for rigorous, constrained, asynchronous software development.**
 Define protected scopes and explicit features, delegate background work to autonomous worktrees, and integrate with your existing toolchain (pre-commit, Makefile). Agents produce isolated commits following Conventional Commits and submit merge-ready changes with minimal disruption to the main session.
+
+---
+
+## Project Links
+
+- Repository: <https://github.com/lakodo/jean-michel>
+- Curry scheduler backend reference: <https://github.com/lakodo/curry>
 
 ---
 
@@ -239,7 +252,7 @@ It:
 It is not necessarily the conversational interface.
 It operates behind it.
 
-Task execution may rely on a Dask-based scheduler (via Curry or equivalent), allowing:
+Task execution may rely on a Dask-based scheduler (via [Curry](https://github.com/lakodo/curry) or equivalent), allowing:
 
 - Dependency graphs
 - Parallel task execution
@@ -389,8 +402,26 @@ Modules to formalize next:
 
 ---
 
-If you want, next step we can:
+## Development Setup
 
-- Formalize the module tree structure (`jean_michel/…`)
-- Define core Python classes
-- Or write the initial `pyproject.toml` skeleton.
+Install the local environment and hooks:
+
+```bash
+make install
+```
+
+Run formatting and checks once after bootstrap:
+
+```bash
+uv run pre-commit run -a
+```
+
+---
+
+## Releasing
+
+For a release workflow aligned with the current CI:
+
+1. Add `PYPI_TOKEN` in repository secrets: <https://github.com/lakodo/jean-michel/settings/secrets/actions/new>
+2. Create a GitHub release: <https://github.com/lakodo/jean-michel/releases/new>
+3. Use a semantic tag format: `X.Y.Z`
