@@ -46,6 +46,30 @@ docs-test: ## Test if documentation can be built without warnings or errors
 docs: ## Build and serve the documentation
 	@uv run mkdocs serve
 
+.PHONY: jm
+jm: ## Run Jean-Michel CLI (usage: make jm ARGS="list messages")
+	@uv run jm $(ARGS)
+
+.PHONY: jm-help
+jm-help: ## Show Jean-Michel CLI help
+	@uv run jm --help
+
+.PHONY: jm-send
+jm-send: ## Send a message (usage: make jm-send MSG="hello")
+	@uv run jm send "$(MSG)"
+
+.PHONY: jm-list
+jm-list: ## List messages (usage: make jm-list LIMIT=100)
+	@uv run jm list messages --limit $(or $(LIMIT),100)
+
+.PHONY: jm-mcp
+jm-mcp: ## Run MCP server (usage: make jm-mcp TRANSPORT=stdio HOST=127.0.0.1 PORT=8001)
+	@uv run jm mcp --transport $(or $(TRANSPORT),stdio) --host $(or $(HOST),127.0.0.1) --port $(or $(PORT),8001)
+
+.PHONY: api
+api: ## Run FastAPI server (usage: make api HOST=127.0.0.1 PORT=5656 RELOAD=true)
+	@uv run uvicorn jean_michel.api.app:app --host $(or $(HOST),127.0.0.1) --port $(or $(PORT),5656) $(if $(filter true,$(RELOAD)),--reload,)
+
 .PHONY: help
 help:
 	@uv run python -c "import re; \

@@ -20,6 +20,15 @@ def _service() -> ConversationService:
     return ConversationService(DuckDBConversationStore(get_db_path()))
 
 
+@app.callback(invoke_without_command=True)
+def app_callback(ctx: typer.Context) -> None:
+    """Show help when no command is provided."""
+
+    if ctx.invoked_subcommand is None:
+        typer.echo(ctx.get_help())
+        raise typer.Exit(0)
+
+
 @app.command("send")
 def send_message(content: str) -> None:
     """Send a message using default git identity."""

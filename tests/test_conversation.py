@@ -63,3 +63,13 @@ def test_cli_mcp_without_subcommand_starts_server(monkeypatch):
 
     assert result.exit_code == 0
     assert captured == {"transport": "stdio", "host": "127.0.0.1", "port": 8001}
+
+
+def test_cli_no_args_shows_help():
+    runner = CliRunner()
+
+    result = runner.invoke(app, [])
+
+    assert result.exit_code == 0
+    assert "Jean-Michel conversation CLI" in result.stdout
+    assert "Usage:" in result.stdout
