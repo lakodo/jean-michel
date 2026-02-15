@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import typer
+import uvicorn
 
 from jean_michel.mcp_server import run_mcp_server
 from jean_michel.services import ConversationService
-from jean_michel.settings import get_db_path
+from jean_michel.settings import get_db_path, get_default_api_port
 from jean_michel.storage import DuckDBConversationStore
 
 app = typer.Typer(help="Jean-Michel conversation CLI")
@@ -59,6 +60,12 @@ def _start_mcp_server(transport: str, host: str, port: int) -> None:
     run_mcp_server(transport=normalized_transport, host=host, port=port)
 
 
+def _start_api_server(host: str, port: int | None, reload_server: bool) -> None:
+    resolved_port = port if port is not None else get_default_api_port()
+    typer.echo(f"Starting API server on http://{host}:{resolved_port}")
+    uvicorn.run("jean_michel.api.app:app", host=host, port=resolved_port, reload=reload_server)
+
+
 @list_app.command("messages")
 def list_messages(limit: int = typer.Option(100, min=1, help="Maximum number of messages")) -> None:
     """List conversation messages."""
@@ -78,6 +85,17 @@ def list_messages_short_alias(limit: int = typer.Option(100, min=1, help="Maximu
     """Short alias for message listing."""
 
     _print_messages(limit)
+
+
+@app.command("api")
+def run_api(
+    host: str = typer.Option("127.0.0.1", help="Bind host"),
+    port: int | None = typer.Option(None, help="Bind port (default: repository-derived)"),
+    reload: bool = typer.Option(False, help="Enable auto-reload"),
+) -> None:
+    """Start the FastAPI backend."""
+
+    _start_api_server(host=host, port=port, reload_server=reload)
 
 
 @mcp_app.callback(invoke_without_command=True)

@@ -66,6 +66,17 @@ If this variable is not set, the default path is:
 .jean-michel/conversation.duckdb
 ```
 
+### API Port Strategy
+
+By default, Jean-Michel computes a deterministic API port per repository (range `5600-6599`) from repository identity.
+This avoids using the same port across different repos on the same machine.
+
+To force a specific API port:
+
+```bash
+JEAN_MICHEL_API_PORT=5656 make api
+```
+
 ---
 
 ## What “Asynchronous” Means

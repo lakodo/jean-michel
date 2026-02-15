@@ -9,7 +9,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from jean_michel.services import ConversationService
-from jean_michel.settings import get_db_path
+from jean_michel.settings import find_repo_root, get_db_path, get_default_api_port, get_repo_identity
 from jean_michel.storage import DuckDBConversationStore
 
 
@@ -22,6 +22,10 @@ def _build_service() -> ConversationService:
 def create_app() -> FastAPI:
     app = FastAPI(title="Jean-Michel Conversation")
     service = _build_service()
+    repo_root = find_repo_root()
+    repo_identity = get_repo_identity(repo_root)
+    db_path = get_db_path()
+    default_port = get_default_api_port(repo_root)
     templates = Jinja2Templates(directory=str(Path(__file__).resolve().parents[1] / "templates"))
 
     @app.get("/")
@@ -35,6 +39,11 @@ def create_app() -> FastAPI:
                 "messages": messages,
                 "actor": actor,
                 "limit": limit,
+                "repo_name": repo_root.name,
+                "repo_root": str(repo_root),
+                "repo_identity": repo_identity,
+                "db_path": str(db_path),
+                "default_port": default_port,
             },
         )
 

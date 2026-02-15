@@ -67,8 +67,9 @@ jm-mcp: ## Run MCP server (usage: make jm-mcp TRANSPORT=stdio HOST=127.0.0.1 POR
 	@uv run jm mcp --transport $(or $(TRANSPORT),stdio) --host $(or $(HOST),127.0.0.1) --port $(or $(PORT),8001)
 
 .PHONY: api
-api: ## Run FastAPI server (usage: make api HOST=127.0.0.1 PORT=5656 RELOAD=true)
-	@uv run uvicorn jean_michel.api.app:app --host $(or $(HOST),127.0.0.1) --port $(or $(PORT),5656) $(if $(filter true,$(RELOAD)),--reload,)
+api: ## Run FastAPI server (usage: make api HOST=127.0.0.1 PORT=<repo-default|override> RELOAD=true)
+	@PORT_VALUE="$(or $(PORT),$$(uv run python -c 'from jean_michel.settings import get_default_api_port; print(get_default_api_port())'))"; \
+	uv run uvicorn jean_michel.api.app:app --host $(or $(HOST),127.0.0.1) --port $$PORT_VALUE $(if $(filter true,$(RELOAD)),--reload,)
 
 .PHONY: help
 help:

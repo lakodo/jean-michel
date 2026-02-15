@@ -73,3 +73,53 @@ def test_cli_no_args_shows_help():
     assert result.exit_code == 0
     assert "Jean-Michel conversation CLI" in result.stdout
     assert "Usage:" in result.stdout
+
+
+def test_cli_api_uses_repo_default_port(monkeypatch):
+    captured: dict[str, object] = {}
+
+    def fake_get_default_api_port() -> int:
+        return 6123
+
+    def fake_uvicorn_run(app_path: str, host: str, port: int, reload: bool) -> None:
+        captured["app_path"] = app_path
+        captured["host"] = host
+        captured["port"] = port
+        captured["reload"] = reload
+
+    monkeypatch.setattr(cli_module, "get_default_api_port", fake_get_default_api_port)
+    monkeypatch.setattr(cli_module.uvicorn, "run", fake_uvicorn_run)
+    runner = CliRunner()
+
+    result = runner.invoke(app, ["api"])
+
+    assert result.exit_code == 0
+    assert captured == {
+        "app_path": "jean_michel.api.app:app",
+        "host": "127.0.0.1",
+        "port": 6123,
+        "reload": False,
+    }
+
+
+def test_cli_api_accepts_explicit_port(monkeypatch):
+    captured: dict[str, object] = {}
+
+    def fake_uvicorn_run(app_path: str, host: str, port: int, reload: bool) -> None:
+        captured["app_path"] = app_path
+        captured["host"] = host
+        captured["port"] = port
+        captured["reload"] = reload
+
+    monkeypatch.setattr(cli_module.uvicorn, "run", fake_uvicorn_run)
+    runner = CliRunner()
+
+    result = runner.invoke(app, ["api", "--host", "0.0.0.0", "--port", "7777", "--reload"])
+
+    assert result.exit_code == 0
+    assert captured == {
+        "app_path": "jean_michel.api.app:app",
+        "host": "0.0.0.0",
+        "port": 7777,
+        "reload": True,
+    }
