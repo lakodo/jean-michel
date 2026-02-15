@@ -1,14 +1,18 @@
 site_name: jean-michel
-repo_url: https://github.com/9hgg/jean-michel
-site_url: https://9hgg.github.io/jean-michel
-site_description: An opA rigorous, constraint-first AI coding assistant built for asynchronous workflows.
+repo_url: https://github.com/lakodo/jean-michel
+site_url: https://lakodo.github.io/jean-michel
+site_description: An opinionated AI assistant for rigorous, constrained, asynchronous software development.
 site_author: Joris GUERRY
 edit_uri: edit/main/docs/
-repo_name: 9hgg/jean-michel
-copyright: Maintained by <a href="https://9hgg.com">9hgg</a>.
+repo_name: lakodo/jean-michel
+copyright: Maintained by <a href="https://lakodo.com">lakodo</a>.
 
 nav:
   - Home: index.md
+  - Installation: installation.md
+  - MCP + VSCode Setup: mcp-vscode.md
+  - Architecture Overview: architecture.md
+  - Core Concepts: core-concepts.md
   - Modules: modules.md
 plugins:
   - search
@@ -41,7 +45,7 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/9hgg/jean-michel
+      link: https://github.com/lakodo/jean-michel
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/jean-michel
 

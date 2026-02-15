@@ -120,7 +120,7 @@ They are interacting with a persistent project-level entity that reads the timel
 
 ## Core Concepts
 
-### 1. Commitology (C-O-2-M-I-T-O-L-O-G-Y)
+### 1. Commitology
 
 Commitology enforces disciplined commit production.
 
