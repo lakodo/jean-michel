@@ -1,9 +1,9 @@
 # Jean-Michel
 
 > [!WARNING]
-> **WIP / Early stage project.**
-> Jean-Michel is not ready for real installation/production use yet: the architecture and APIs are still moving.
-> By the time this is fully polished, maybe Devstral 42 or ChatGPT 10.12 will exist and make this whole thing gloriously obsolete.
+> **Project on hold.**
+> AI tooling is moving very fast, and the gap this project set out to fill no longer looks like it needs a custom solution.
+> Development is paused indefinitely. The code below is kept for reference; expect no further updates unless that changes.
 
 [![Release](https://img.shields.io/github/v/release/lakodo/jean-michel)](https://github.com/lakodo/jean-michel/releases)
 [![Build status](https://img.shields.io/github/actions/workflow/status/lakodo/jean-michel/main.yml?branch=main)](https://github.com/lakodo/jean-michel/actions/workflows/main.yml?query=branch%3Amain)
@@ -477,8 +477,10 @@ It is an orchestration layer for disciplined autonomous engineering.
 
 ## Status
 
+**On hold.** See the warning at the top of this document.
+
 Conceptual architecture.
-Modules to formalize next:
+Modules to formalize next (paused):
 
 - Commitology
 - Scope engine (features & constraints)
